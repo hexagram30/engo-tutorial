@@ -8,6 +8,7 @@ import (
 	"github.com/EngoEngine/engo/common"
 
 	"github.com/hexagram30/engo-tutorial/pkg/systems"
+	"github.com/hexagram30/engo-tutorial/pkg/tiles"
 )
 
 const (
@@ -17,7 +18,7 @@ const (
 	gameTitle       = "Hello World"
 	hudHeight       = 200
 	hudWidth        = 200
-	keyboardSpeed   = -1 * edgeScrollSpeed
+	keyboardSpeed   = edgeScrollSpeed
 	worldHeight     = 400
 	worldWidth      = 400
 	zoomSpeed       = -0.125 // negative means "scrolling down = zooming out"
@@ -31,12 +32,16 @@ func (*myGame) Type() string { return gameName }
 // Preload is called before loading any assets from the disk, to allow you to
 // register / queue them
 func (*myGame) Preload() {
-	engo.Files.Load("textures/city.png")
+	engo.Files.Load(
+		"textures/city.png",
+		"tilemap/TrafficMap.tmx",
+	)
 }
 
 // Setup is called before the main loop starts. It allows you to add entities
 // and systems to your Scene.
 func (*myGame) Setup(u engo.Updater) {
+
 	world, _ := u.(*ecs.World)
 	engo.Input.RegisterButton("AddCity", engo.KeyF1)
 	common.SetBackground(color.White)
@@ -55,6 +60,18 @@ func (*myGame) Setup(u engo.Updater) {
 		switch sys := system.(type) {
 		case *common.RenderSystem:
 			sys.Add(&hud.BasicEntity, &hud.RenderComponent, &hud.SpaceComponent)
+		}
+	}
+	level, err := tiles.NewLevel("tilemap/TrafficMap.tmx")
+	if err != nil {
+		panic(err)
+	}
+	for _, system := range world.Systems() {
+		switch sys := system.(type) {
+		case *common.RenderSystem:
+			for _, tile := range level {
+				sys.Add(&tile.BasicEntity, &tile.RenderComponent, &tile.SpaceComponent)
+			}
 		}
 	}
 }
