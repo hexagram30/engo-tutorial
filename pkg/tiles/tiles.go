@@ -19,7 +19,6 @@ func NewLevel(tmxAsset string) ([]*Tile, error) {
 	}
 	tmxResource := resource.(common.TMXResource)
 	levelData := tmxResource.Level
-	common.CameraBounds = levelData.Bounds()
 	tiles := make([]*Tile, 0)
 	for _, tileLayer := range levelData.TileLayers {
 		for _, tileElement := range tileLayer.Tiles {
@@ -29,6 +28,7 @@ func NewLevel(tmxAsset string) ([]*Tile, error) {
 					Drawable: tileElement.Image,
 					Scale:    engo.Point{1, 1},
 				}
+				// tile.RenderComponent.SetZIndex(1)
 				tile.SpaceComponent = common.SpaceComponent{
 					Position: tileElement.Point,
 					Width:    0,
@@ -38,5 +38,6 @@ func NewLevel(tmxAsset string) ([]*Tile, error) {
 			}
 		}
 	}
+	common.CameraBounds = levelData.Bounds()
 	return tiles, nil
 }

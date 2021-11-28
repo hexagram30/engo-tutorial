@@ -19,8 +19,8 @@ const (
 	hudHeight       = 200
 	hudWidth        = 200
 	keyboardSpeed   = edgeScrollSpeed
-	worldHeight     = 400
-	worldWidth      = 400
+	worldHeight     = 800
+	worldWidth      = 800
 	zoomSpeed       = -0.125 // negative means "scrolling down = zooming out"
 )
 
@@ -33,7 +33,7 @@ func (*myGame) Type() string { return gameName }
 // register / queue them
 func (*myGame) Preload() {
 	engo.Files.Load(
-		"textures/city.png",
+		"sprites/CitySheet.png",
 		"tilemap/TrafficMap.tmx",
 	)
 }
@@ -41,9 +41,7 @@ func (*myGame) Preload() {
 // Setup is called before the main loop starts. It allows you to add entities
 // and systems to your Scene.
 func (*myGame) Setup(u engo.Updater) {
-
 	world, _ := u.(*ecs.World)
-	engo.Input.RegisterButton("AddCity", engo.KeyF1)
 	common.SetBackground(color.White)
 	world.AddSystem(&common.RenderSystem{})
 	world.AddSystem(&common.MouseSystem{})

@@ -9,6 +9,10 @@ import (
 	"github.com/EngoEngine/engo/common"
 )
 
+const (
+	hudZIndex = 1000
+)
+
 type HUD struct {
 	ecs.BasicEntity
 	common.RenderComponent
@@ -32,6 +36,6 @@ func NewHUD(width, height float32) HUD {
 		Repeat:   common.Repeat,
 	}
 	hud.RenderComponent.SetShader(common.HUDShader)
-	hud.RenderComponent.SetZIndex(1)
+	hud.RenderComponent.SetZIndex(hudZIndex)
 	return hud
 }
