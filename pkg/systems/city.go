@@ -62,11 +62,14 @@ func (cb *CityBuildingSystem) New(w *ecs.World) {
 	fmt.Println("CityBuildingSystem was added to the Scene")
 	cb.mouseTracker.BasicEntity = ecs.NewBasic()
 	cb.mouseTracker.MouseComponent = common.MouseComponent{Track: true}
-
 	for _, system := range w.Systems() {
 		switch sys := system.(type) {
 		case *common.MouseSystem:
-			sys.Add(&cb.mouseTracker.BasicEntity, &cb.mouseTracker.MouseComponent, nil, nil)
+			sys.Add(
+				&cb.mouseTracker.BasicEntity,
+				&cb.mouseTracker.MouseComponent,
+				nil,
+				nil)
 		}
 	}
 }

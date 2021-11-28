@@ -11,13 +11,16 @@ import (
 )
 
 const (
-	cameraSpeed = 400
-	edgeRadius  = 20 // units = pixels
-	gameName    = "myGame"
-	gameTitle   = "Hello World"
-	worldHeight = 400
-	worldWidth  = 400
-	zoomSpeed   = -0.125 // negative means "scrolling down = zooming out"
+	edgeScrollSpeed = 400
+	edgeRadius      = 20 // units = pixels
+	gameName        = "myGame"
+	gameTitle       = "Hello World"
+	hudHeight       = 200
+	hudWidth        = 200
+	keyboardSpeed   = -1 * edgeScrollSpeed
+	worldHeight     = 400
+	worldWidth      = 400
+	zoomSpeed       = -0.125 // negative means "scrolling down = zooming out"
 )
 
 type myGame struct{}
@@ -40,13 +43,20 @@ func (*myGame) Setup(u engo.Updater) {
 	world.AddSystem(&common.RenderSystem{})
 	world.AddSystem(&common.MouseSystem{})
 	world.AddSystem(common.NewKeyboardScroller(
-		cameraSpeed,
+		keyboardSpeed,
 		engo.DefaultHorizontalAxis,
 		engo.DefaultVerticalAxis,
 	))
-	world.AddSystem(&common.EdgeScroller{cameraSpeed, edgeRadius})
+	world.AddSystem(&common.EdgeScroller{edgeScrollSpeed, edgeRadius})
 	world.AddSystem(&common.MouseZoomer{zoomSpeed})
 	world.AddSystem(&systems.CityBuildingSystem{})
+	hud := systems.NewHUD(hudWidth, hudHeight)
+	for _, system := range world.Systems() {
+		switch sys := system.(type) {
+		case *common.RenderSystem:
+			sys.Add(&hud.BasicEntity, &hud.RenderComponent, &hud.SpaceComponent)
+		}
+	}
 }
 
 func main() {
