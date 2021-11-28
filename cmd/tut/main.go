@@ -11,7 +11,9 @@ func (*myScene) Type() string { return "myGame" }
 
 // Preload is called before loading any assets from the disk,
 // to allow you to register / queue them
-func (*myScene) Preload() {}
+func (*myScene) Preload() {
+	engo.Files.Load("textures/city.png")
+}
 
 // Setup is called before the main loop starts. It allows you
 // to add entities and systems to your Scene.
