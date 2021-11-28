@@ -10,10 +10,20 @@ import (
 	"github.com/hexagram30/engo-tutorial/pkg/systems"
 )
 
+const (
+	cameraSpeed = 400
+	edgeRadius  = 20 // units = pixels
+	gameName    = "myGame"
+	gameTitle   = "Hello World"
+	worldHeight = 400
+	worldWidth  = 400
+	zoomSpeed   = -0.125 // negative means "scrolling down = zooming out"
+)
+
 type myGame struct{}
 
 // Type uniquely defines your game type
-func (*myGame) Type() string { return "myGame" }
+func (*myGame) Type() string { return gameName }
 
 // Preload is called before loading any assets from the disk, to allow you to
 // register / queue them
@@ -29,14 +39,22 @@ func (*myGame) Setup(u engo.Updater) {
 	common.SetBackground(color.White)
 	world.AddSystem(&common.RenderSystem{})
 	world.AddSystem(&common.MouseSystem{})
+	world.AddSystem(common.NewKeyboardScroller(
+		cameraSpeed,
+		engo.DefaultHorizontalAxis,
+		engo.DefaultVerticalAxis,
+	))
+	world.AddSystem(&common.EdgeScroller{cameraSpeed, edgeRadius})
+	world.AddSystem(&common.MouseZoomer{zoomSpeed})
 	world.AddSystem(&systems.CityBuildingSystem{})
 }
 
 func main() {
 	opts := engo.RunOptions{
-		Title:  "Hello World",
-		Width:  400,
-		Height: 400,
+		Title:          gameTitle,
+		Width:          worldWidth,
+		Height:         worldHeight,
+		StandardInputs: true,
 	}
 	engo.Run(opts, &myGame{})
 }
